@@ -16,8 +16,8 @@ PlayerSettings:
   cursorHotspot: {x: 0, y: 0}
   defaultScreenWidth: 600
   defaultScreenHeight: 480
-  defaultScreenWidthWeb: 600
-  defaultScreenHeightWeb: 450
+  defaultScreenWidthWeb: 900
+  defaultScreenHeightWeb: 600
   m_RenderingPath: 1
   m_ActiveColorSpace: 0
   m_MTRendering: 1
@@ -147,7 +147,10 @@ PlayerSettings:
   ps3SaveGameSlots: 1
   ps3TrialMode: 0
   flashStrippingLevel: 2
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    data:
+      first: 1
+      second: 
   metroPackageName: 
   metroPackageLogo: 
   metroPackageVersion: 

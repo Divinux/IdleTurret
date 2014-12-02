@@ -14,26 +14,33 @@ public class Turret : MonoBehaviour
 	//to control the rotation 
 	public float damping = 1.0f;	
 	//range
-	public float vRange = 10F;
+	public float vRange = 10f;
 	//cooldown
-	public int vCool = 200;
-	public int vMaxCool = 200;
+	public float vCool = 200f;
+	public float vMaxCool = 200f;
 	//hp
-	public int vHealth = 100;
+	public float vHealth = 100f;
+	public float vMaxHealth = 100f;
 	//money
 	public int vMoney = 1;
+	//level
+	public int vLvl = 1;
+	public float vCurrExp = 0;
+	public float vExpBase = 10;
+	public float vExpLeft;
+	public float vMod = 1.15f;
 	//////////////
 	//bullet speed
-	public float vBulSpeed = 1F;
+	public float vBulSpeed = 1f;
 	//bullet dgm
-	public int vBulDmg = 10;
+	public float vBulDmg = 10f;
 	//////////////
 	//wave size
 	public int vWaveSize = 1;
 	public int vWaveFreq = 2000;
-	public float eSpeed = 1F;
+	public float eSpeed = 1f;
 	public int eDmg = 1;
-	public float eHealth = 1F;
+	public float eHealth = 1f;
 	public int eMoney = 1;
 	
 	
@@ -48,6 +55,12 @@ public class Turret : MonoBehaviour
 	//list of spawners
 	public List<GameObject> vSpawners = new List<GameObject>();
 	
+	//script objects
+	public GameObject vCam;
+	public Notif vN;
+	public Sound vS;
+	
+	
 	
 	
 	
@@ -60,7 +73,11 @@ public class Turret : MonoBehaviour
 	{
 		fwd = vGun.transform.rotation;
 		FindNearest();
+		vExpLeft = vExpBase;
 		
+		vCam =  GameObject.FindWithTag("MainCamera");
+		vN = vCam.GetComponent<Notif>();
+		vS = vCam.GetComponent<Sound>();
 	}
 	
 	void FixedUpdate () 
@@ -70,12 +87,12 @@ public class Turret : MonoBehaviour
 			if((vNearest.transform.position - transform.position).sqrMagnitude <= vRange)
 			{
 				SmoothLook();
-				if(vCool == 0 && cd <= 0)
+				if(vCool <= 1 && cd <= 0)
 				{
 					RaycastHit hit;
 					if (Physics.Raycast (vGun.transform.position, vGun.transform.TransformDirection(Vector3.forward),out hit, vRange * 1F)) 
 					{
-						Debug.Log(hit.transform.gameObject);
+						//Debug.Log(hit.transform.gameObject);
 						//Debug.DrawLine(hit.point, vGun.transform.position, Color.green, 1, false);
 						//Debug.Log(vNearest);
 						if(hit.transform.gameObject == vNearest)
@@ -103,7 +120,7 @@ public class Turret : MonoBehaviour
 			vCool--;
 		}
 	}
-	
+	//shoot
 	void Shoot()
 	{
 		
@@ -111,13 +128,13 @@ public class Turret : MonoBehaviour
 		GameObject b = Instantiate(vBullet, vGun.transform.position, vGun.transform.rotation) as GameObject;
 		Bullet bs = b.GetComponent<Bullet>();
 		bs.vSpeed = vBulSpeed;
-		bs.vDmg = vBulDmg;
+		bs.vDmg = (int)vBulDmg;
 		bs.vTarget = vNearest;
 		
 		vCool = vMaxCool;
 		
 	}
-	
+	//find nearest enemy
 	void FindNearest()
 	{
 		foreach(GameObject a in vEnemies)
@@ -137,7 +154,7 @@ public class Turret : MonoBehaviour
 			}
 		}
 	}
-	
+	//rotation functions
 	void SmoothLook()
 	{
 		Quaternion vrotation = Quaternion.LookRotation(vNearest.transform.position - vGun.transform.position);
@@ -147,7 +164,7 @@ public class Turret : MonoBehaviour
 	{
 		vGun.transform.rotation = Quaternion.Slerp(vGun.transform.rotation, fwd, Time.deltaTime * damping);
 	}
-	
+	//spawn next wave
 	public void Spawn()
 	{
 		StartCoroutine("SpawnWave");
@@ -169,7 +186,41 @@ public class Turret : MonoBehaviour
 			
 		}
 	}
-	
+	//gain exp called internally
+	void GainExp(int ex)
+	{
+		vCurrExp += ex;
+		if(vCurrExp >= vExpLeft)
+		{
+			LvlUp();
+			
+		}
+	}
+	//lvl up
+	public void LvlUp()
+	{
+		vCurrExp -= vExpLeft;
+			//lvlup
+			vLvl++;
+			LvlStats();
+			vN.AddNotif("Level Up!\nLevel: " + vLvl);
+			//calculate next level
+			float t = Mathf.Pow(vMod, vLvl);
+			vExpLeft = vExpBase * t;
+	}
+	//raise stats onlvlup
+	void LvlStats()
+	{
+		vMaxHealth *= 1.1f;
+		//vHealth = vMaxHealth;
+		
+		vMaxCool *= 0.9f;
+		if(vMaxCool < 1)
+		{
+			vMaxCool = 1;
+		}
+	}
+	//take damage
 	public void DMG(int dm)
 	{
 		vHealth -= dm;
@@ -177,5 +228,12 @@ public class Turret : MonoBehaviour
 		{
 			Debug.Log("Game Lost");
 		}
+	}
+	//earn money and exp
+	public void EARN(int exp, int mon)
+	{
+	vMoney += mon;
+	GainExp(exp);
+	
 	}
 }

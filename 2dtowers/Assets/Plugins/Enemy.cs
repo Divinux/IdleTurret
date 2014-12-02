@@ -18,7 +18,7 @@ public class Enemy : MonoBehaviour
 		transform.LookAt(vT.transform);
 		transform.Translate(Vector3.forward * Time.deltaTime * vSpeed);
 		
-		if((vT.transform.position - transform.position).sqrMagnitude <= 2)
+		if((vT.transform.position - transform.position).sqrMagnitude <= 0.4)
 		{
 			vT.DMG(vDmg);
 			Die();
@@ -33,8 +33,8 @@ public class Enemy : MonoBehaviour
 		if(vHealth <= 0)
 		{
 			//die
+			vT.EARN(vDmg, vMoney);
 			
-			vT.vMoney += vMoney;
 			Die();
 		}
 	}

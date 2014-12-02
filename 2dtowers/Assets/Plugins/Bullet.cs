@@ -29,7 +29,7 @@ public class Bullet : MonoBehaviour
 		}
 		else
 		{
-			Destroy(gameObject);
+			transform.Translate(Vector3.forward * Time.deltaTime * vSpeed);
 		}
 	}
 	
