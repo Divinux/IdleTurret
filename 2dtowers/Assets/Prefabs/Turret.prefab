@@ -27,6 +27,7 @@ GameObject:
   - 114: {fileID: 11400002}
   - 114: {fileID: 11400004}
   - 114: {fileID: 11400006}
+  - 114: {fileID: 11400008}
   m_Layer: 0
   m_Name: Turret
   m_TagString: Untagged
@@ -248,6 +249,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &100030
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400030}
+  m_Layer: 0
+  m_Name: ScanRot2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &100032
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400032}
+  m_Layer: 0
+  m_Name: ScanRot1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -273,6 +304,8 @@ Transform:
   m_Children:
   - {fileID: 400004}
   - {fileID: 400000}
+  - {fileID: 400032}
+  - {fileID: 400030}
   m_Father: {fileID: 0}
 --- !u!4 &400004
 Transform:
@@ -293,7 +326,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: .360907555, z: -.827272773}
+  m_LocalPosition: {x: -1.50385075e-17, y: .441086888, z: -1.47686839}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400000}
@@ -427,6 +460,28 @@ Transform:
   - {fileID: 400022}
   - {fileID: 400020}
   m_Father: {fileID: 400004}
+--- !u!4 &400030
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100030}
+  m_LocalRotation: {x: 0, y: .691952705, z: 0, w: .721942902}
+  m_LocalPosition: {x: 0, y: 1.10182095, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400002}
+--- !u!4 &400032
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100032}
+  m_LocalRotation: {x: 0, y: -.690417707, z: 0, w: .723410964}
+  m_LocalPosition: {x: 0, y: 1.10182142, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400002}
 --- !u!23 &2300000
 Renderer:
   m_ObjectHideFlags: 1
@@ -675,6 +730,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 968642ff0acf53440944dba61b899ba5, type: 3}
   m_Name: 
   vGun: {fileID: 100000}
+  vGunC: {fileID: 100026}
   vBullet: {fileID: 100000, guid: 21fc71fb847a8cc47952b7a91b07165e, type: 2}
   vEnemy: {fileID: 100000, guid: 63d4632e36481ac4ba6e8f71c1ec1f60, type: 2}
   damping: 1
@@ -693,10 +749,12 @@ MonoBehaviour:
   vBulDmg: 2
   vWaveSize: 1
   vWaveFreq: 2000
+  eLvl: 1
   eSpeed: 1
   eDmg: 2
   eHealth: 2
   eMoney: 2
+  eExp: 2
   vEnemies: []
   vNearest: {fileID: 0}
   vNearDist: 0
@@ -708,8 +766,16 @@ MonoBehaviour:
   vCam: {fileID: 0}
   vN: {fileID: 0}
   vS: {fileID: 0}
+  vM: {fileID: 0}
+  vScPos1: {fileID: 100032}
+  vScPos2: {fileID: 100030}
   fwd: {x: 0, y: 0, z: 0, w: 0}
+  lft: {x: 0, y: 0, z: 0, w: 0}
+  rght: {x: 0, y: 0, z: 0, w: 0}
+  vScanBool: 1
   cd: 0
+  vLastDir: -1
+  vCurrDir: 0
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -738,6 +804,7 @@ MonoBehaviour:
   vT: {fileID: 0}
   vU: {fileID: 0}
   vN: {fileID: 0}
+  vM: {fileID: 0}
   vToUnlock: -1
 --- !u!114 &11400006
 MonoBehaviour:
@@ -752,6 +819,32 @@ MonoBehaviour:
   vCam: {fileID: 0}
   vN: {fileID: 0}
   vT: {fileID: 0}
+--- !u!114 &11400008
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16ab2aee40aef1240b3cefd230ffb186, type: 3}
+  m_Name: 
+  vBases:
+  - {fileID: 100024}
+  - {fileID: 100022}
+  - {fileID: 100020}
+  vGuns:
+  - {fileID: 100014}
+  - {fileID: 100012}
+  - {fileID: 100010}
+  vTextures:
+  - {fileID: 2800000, guid: 15760a1bd83f16f419be1f0a2fbd21c8, type: 3}
+  - {fileID: 2800000, guid: 5e6a1b4d02e8ba747a9957fe31a6888d, type: 3}
+  - {fileID: 2800000, guid: 15760a1bd83f16f419be1f0a2fbd21c8, type: 3}
+  vMaterial: {fileID: 2100000, guid: 5066827a98d2a614a86448fa2fc89453, type: 2}
+  vCurrBase: 0
+  vCurrGun: 0
+  vTexture: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

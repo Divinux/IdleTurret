@@ -8,8 +8,8 @@ public class Notif : MonoBehaviour
 	
 	public List<string> lQueue = new List<string>();
 	
-	public int vCool;
-	public int vMaxCool = 200;
+	public float vCool;
+	public float vMaxCool = 200;
 	
 	
 	
@@ -51,7 +51,7 @@ public class Notif : MonoBehaviour
 		if(vCool > 0)
 		{
 			vCool--;
-			if(vCool == 0)
+			if(vCool <= 0)
 			{
 				Disable();
 			}

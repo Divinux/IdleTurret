@@ -7,10 +7,17 @@ public class Enemy : MonoBehaviour
 	public int vDmg = 1;
 	public float vHealth = 1;
 	public int vMoney = 1;
+	public int vExp = 1;
 	
 	public Turret vT;
+	public GameObject vCam;
+	public Sound vS;
 	
-	
+	void Awake()
+	{
+		vCam = GameObject.FindWithTag("MainCamera");
+		vS = vCam.GetComponent<Sound>();
+	}
 	void FixedUpdate () 
 	{
 	if(vT != null)
@@ -33,7 +40,7 @@ public class Enemy : MonoBehaviour
 		if(vHealth <= 0)
 		{
 			//die
-			vT.EARN(vDmg, vMoney);
+			vT.EARN(vExp, vMoney);
 			
 			Die();
 		}
@@ -41,6 +48,7 @@ public class Enemy : MonoBehaviour
 	
 	void Die()
 	{
+	vS.PlayPop();
 	vT.vEnemies.Remove(gameObject);
 	Destroy(gameObject);
 	}

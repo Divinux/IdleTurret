@@ -5,6 +5,8 @@ public class Turret : MonoBehaviour
 {
 	//rotating gun object
 	public GameObject vGun;
+	//rotating gun object
+	public GameObject vGunC;
 	//bullet prefab
 	public GameObject vBullet;
 	//enemy prefab
@@ -26,7 +28,7 @@ public class Turret : MonoBehaviour
 	//level
 	public int vLvl = 1;
 	public float vCurrExp = 0;
-	public float vExpBase = 10;
+	public float vExpBase = 4;
 	public float vExpLeft;
 	public float vMod = 1.15f;
 	//////////////
@@ -38,10 +40,12 @@ public class Turret : MonoBehaviour
 	//wave size
 	public int vWaveSize = 1;
 	public int vWaveFreq = 2000;
+	public int eLvl = 1;
 	public float eSpeed = 1f;
 	public int eDmg = 1;
 	public float eHealth = 1f;
 	public int eMoney = 1;
+	public int eExp = 2;
 	
 	
 	
@@ -59,25 +63,41 @@ public class Turret : MonoBehaviour
 	public GameObject vCam;
 	public Notif vN;
 	public Sound vS;
+	public Meshes vM;
+	
+	public GameObject vScPos1;
+	public GameObject vScPos2;
 	
 	
-	
-	
-	
+	//recoid vel
+	private Vector3 velocityRec = Vector3.zero;
+	private Vector3 targetPosition;
 	//fwd rot
 	public Quaternion fwd;
+	//bwd rot 
+	public Quaternion lft;
+	//bwd rot 
+	public Quaternion rght;
+	//scan bool
+	public bool vScanBool = true;
 	//ray cd
 	public int cd = 0;
-	
+	//direction change
+	public int vLastDir = -1;
+	public int vCurrDir = 0;
 	void Awake () 
 	{
 		fwd = vGun.transform.rotation;
+		lft = vScPos1.transform.rotation;
+		rght = vScPos2.transform.rotation;
+		targetPosition = vGunC.transform.localPosition;
 		FindNearest();
 		vExpLeft = vExpBase;
 		
 		vCam =  GameObject.FindWithTag("MainCamera");
 		vN = vCam.GetComponent<Notif>();
 		vS = vCam.GetComponent<Sound>();
+		vM = gameObject.GetComponent<Meshes>();
 	}
 	
 	void FixedUpdate () 
@@ -87,6 +107,7 @@ public class Turret : MonoBehaviour
 			if((vNearest.transform.position - transform.position).sqrMagnitude <= vRange)
 			{
 				SmoothLook();
+				vCurrDir = 0;
 				if(vCool <= 1 && cd <= 0)
 				{
 					RaycastHit hit;
@@ -104,6 +125,12 @@ public class Turret : MonoBehaviour
 				}
 				cd--;
 			}
+			else
+			{
+				
+				SmoothScan();
+				vCurrDir = 1;
+			}
 		}
 		else
 		{
@@ -112,27 +139,51 @@ public class Turret : MonoBehaviour
 		
 		if(vNearest == null)
 		{
-			SmoothFwd();
+			
+			SmoothScan();
+			vCurrDir = 2;
 		}
 		
 		if(vCool > 0)
 		{
 			vCool--;
+			if(vCool < 0)
+			{
+				vCool = 0;
+			}
+		}
+		if(vLastDir != vCurrDir)
+		{
+			vS.PlayMove();
+			vLastDir = vCurrDir;
 		}
 	}
 	//shoot
 	void Shoot()
 	{
-		
+		vS.PlayShoot();
 		//shoot
 		GameObject b = Instantiate(vBullet, vGun.transform.position, vGun.transform.rotation) as GameObject;
 		Bullet bs = b.GetComponent<Bullet>();
+		bs.vT = this;
 		bs.vSpeed = vBulSpeed;
 		bs.vDmg = (int)vBulDmg;
 		bs.vTarget = vNearest;
 		
 		vCool = vMaxCool;
-		
+		Recoil();
+	}
+	void Recoil()
+	{
+		vGunC.transform.Translate(-Vector3.right * 0.5f);
+		StartCoroutine("RecoilCo");
+	}
+	IEnumerator RecoilCo()
+	{
+		while(vGunC.transform.localPosition != targetPosition){
+			vGunC.transform.localPosition = Vector3.SmoothDamp(vGunC.transform.localPosition, targetPosition, ref velocityRec, 0.2f);
+			yield return new WaitForSeconds(0f);
+		}
 	}
 	//find nearest enemy
 	void FindNearest()
@@ -157,12 +208,40 @@ public class Turret : MonoBehaviour
 	//rotation functions
 	void SmoothLook()
 	{
+		
 		Quaternion vrotation = Quaternion.LookRotation(vNearest.transform.position - vGun.transform.position);
 		vGun.transform.rotation = Quaternion.Slerp(vGun.transform.rotation, vrotation, Time.deltaTime * damping);
 	}
 	void SmoothFwd()
 	{
-		vGun.transform.rotation = Quaternion.Slerp(vGun.transform.rotation, fwd, Time.deltaTime * damping);
+		vGun.transform.rotation = Quaternion.Slerp(vGun.transform.rotation, fwd, Time.deltaTime * 0.3f);
+		//Debug.Log(Quaternion.Dot(fwd, vGun.transform.rotation));
+		
+	}
+	void SmoothScan()
+	{
+		if(vScanBool)
+		{
+			vGun.transform.rotation = Quaternion.Slerp(vGun.transform.rotation, rght, Time.deltaTime * 0.2f);
+			//Debug.Log(Quaternion.Angle(rght, vGun.transform.rotation));
+			if(Quaternion.Angle(rght, vGun.transform.rotation) <= 20f)
+			{
+				
+				vS.PlayMove();
+				vScanBool = false;
+			}
+		}
+		else
+		{
+			vGun.transform.rotation = Quaternion.Slerp(vGun.transform.rotation, lft, Time.deltaTime * 0.2f);
+			//Debug.Log(Quaternion.Dot(lft, vGun.transform.rotation));
+			if(Quaternion.Angle(lft, vGun.transform.rotation) <= 20f)
+			{
+				
+				vS.PlayMove();
+				vScanBool = true;
+			}
+		}
 	}
 	//spawn next wave
 	public void Spawn()
@@ -178,6 +257,7 @@ public class Turret : MonoBehaviour
 			Enemy e = ins.GetComponent<Enemy>();
 			e.vSpeed = eSpeed;
 			e.vDmg = eDmg;
+			e.vExp = eExp;
 			e.vHealth = eHealth;
 			e.vMoney = eMoney;
 			vEnemies.Add(ins);
@@ -200,13 +280,14 @@ public class Turret : MonoBehaviour
 	public void LvlUp()
 	{
 		vCurrExp -= vExpLeft;
-			//lvlup
-			vLvl++;
-			LvlStats();
-			vN.AddNotif("Level Up!\nLevel: " + vLvl);
-			//calculate next level
-			float t = Mathf.Pow(vMod, vLvl);
-			vExpLeft = vExpBase * t;
+		//lvlup
+		vLvl++;
+		vMoney += vLvl*50;
+		LvlStats();
+		vN.AddNotif("Level Up!\nLevel: " + vLvl);
+		//calculate next level
+		float t = Mathf.Pow(vMod, vLvl);
+		vExpLeft = vExpBase * t;
 	}
 	//raise stats onlvlup
 	void LvlStats()
@@ -219,6 +300,10 @@ public class Turret : MonoBehaviour
 		{
 			vMaxCool = 1;
 		}
+		vBulDmg *= 1.1f;
+		vBulDmg++;
+		vBulSpeed *= 1.1f;
+		damping *= 1.1f;
 	}
 	//take damage
 	public void DMG(int dm)
@@ -232,8 +317,8 @@ public class Turret : MonoBehaviour
 	//earn money and exp
 	public void EARN(int exp, int mon)
 	{
-	vMoney += mon;
-	GainExp(exp);
-	
+		vMoney += mon;
+		GainExp(exp);
+		
 	}
 }

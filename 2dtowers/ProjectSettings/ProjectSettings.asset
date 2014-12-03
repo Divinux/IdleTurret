@@ -10,8 +10,8 @@ PlayerSettings:
   targetGlesGraphics: 1
   targetResolution: 0
   accelerometerFrequency: 60
-  companyName: Rebound Games GbR
-  productName: 3D Tower Defense Starter Kit
+  companyName: Siri
+  productName: IdleTower
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   defaultScreenWidth: 600
