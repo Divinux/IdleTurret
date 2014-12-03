@@ -58,9 +58,11 @@ public class Ui : MonoBehaviour
 	//notification stuffs
 	public string vNotificationText = "";
 	
+	
 	//option page stuffs
 	public int vStatOpt = 0;
 	public string vMuteButtonText = "";
+	public string vParticleButtonText = "";
 
 	
 	void Awake () 
@@ -68,7 +70,7 @@ public class Ui : MonoBehaviour
 		WindowUpgrades = new Rect(70, 10, 300, 400);
 		WindowResearch = new Rect(70, 10, 300, 400);
 		WindowStatus = new Rect(70, 10, 200, 360);
-		WindowOptions = new Rect(70, 10, 300, 400);
+		WindowOptions = new Rect(70, 10, 300, 220);
 
 		vT = vTurret.GetComponent<Turret>();
 		vW = vTurret.GetComponent<Waves>();
@@ -466,16 +468,35 @@ public class Ui : MonoBehaviour
 			vN.vMaxCool = GUI.HorizontalSlider(new Rect(20, 110, 200, 30), vN.vMaxCool, 1f, 400f);
 			GUI.Label(new Rect(20,130,200,30),"<size=12><color=black>Zoom Speed: "+vC.vAmount +"</color></size>");
 		vC.vAmount = GUI.HorizontalSlider(new Rect(20, 150, 200, 30), vC.vAmount, 0.1F, 1.0F);
+		
+		if(vT.vParticles == 1)
+			{
+			vParticleButtonText = "<color=black>Disable Particles</color>";
+			}
+			else
+			{
+			vParticleButtonText = "<color=black>Enable Particles</color>";
+			}
+			if(GUI.Button(new Rect(20,180,100,20), vParticleButtonText))
+			{
+				
+				Particling();
+			}
+		
 		}
 		else if(vStatOpt == 2)
 		{
 		if(GUI.Button(new Rect(10,90,90,20), "<color=black>Save</color>"))
 			{
+			vS.PlayClickY();
 				vSave.SaveAll();
+				vN.AddNotif("Game Saved");
 			}
 			if(GUI.Button(new Rect(105,90,90,20), "<color=black>Load</color>"))
 			{
+			vS.PlayClickY();
 				vSave.LoadAll();
+				vN.AddNotif("Game Loaded");
 			}
 		}
 		GUI.DragWindow();
@@ -490,6 +511,19 @@ public class Ui : MonoBehaviour
 		else
 		{
 			vS.vMuted = 1.0f;
+			vS.PlayClickY();
+		}
+	}
+	void Particling()
+	{
+		if(vT.vParticles == 1)
+		{
+			vS.PlayClickY();
+			vT.vParticles = 0;
+		}
+		else
+		{
+			vT.vParticles = 1;
 			vS.PlayClickY();
 		}
 	}

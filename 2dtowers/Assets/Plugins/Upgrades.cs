@@ -13,6 +13,7 @@ public class Upgrades : MonoBehaviour
 	public Ui vU;
 	public Notif vN;
 	public Meshes vM; 
+	public S vS;
 	//finished project to be unlocked by button
 	public int vToUnlock = -1;
 
@@ -51,8 +52,16 @@ public class Upgrades : MonoBehaviour
 		vU = vCam.GetComponent<Ui>();
 		vN = vCam.GetComponent<Notif>();
 		vM = gameObject.GetComponent<Meshes>();
+		vS = vCam.GetComponent<S>();
 		PopulateUpgrades();
 		PopulateTech();
+	}
+	void Start()
+	{
+	if(Application.loadedLevel == 1)
+	{
+	vS.CallLoadAll();
+	}
 	}
 	
 	//returns a list of all available upgrades
@@ -184,22 +193,22 @@ public class Upgrades : MonoBehaviour
 			switch (lUpgrades[nn].vSpecial)
 			{
 			case "10HP":
-				if(vT.vHealth == vT.vMaxHealth)
+				if(vT.vHealth < vT.vMaxHealth)
 				{
-					vT.vMoney += 10;
-				}
-				vT.vHealth += 10;
+					vT.vHealth += 10;
 				if(vT.vHealth > vT.vMaxHealth)
 				{
 					vT.vHealth = vT.vMaxHealth;
 				}
+				}
+				
 				break;
 			case "FULLHP":
-				if(vT.vHealth == vT.vMaxHealth)
+				if(vT.vHealth != vT.vMaxHealth)
 				{
-					vT.vMoney += 10;
+					vT.vHealth = vT.vMaxHealth;
 				}
-				vT.vHealth = vT.vMaxHealth;
+				
 				break;
 			case "HPPLUS":
 				vT.vMaxHealth *= 1.1f;
@@ -251,8 +260,9 @@ public class Upgrades : MonoBehaviour
 				IncreasePrice(10);
 				vT.eLvl++;
 				vT.eSpeed *= 1.01f;
-				vT.eDmg = vT.eLvl;
-				vT.eHealth =1 + vT.eLvl;
+				vT.eDmg += 1;
+				vT.eExp += 5;
+				vT.eHealth +=1;
 				vT.eMoney += vT.eLvl;
 				break;
 				case "AR":
@@ -264,17 +274,32 @@ public class Upgrades : MonoBehaviour
 				vN.AddNotif("Research Unlocked!\n " + lTech[5].vName);
 				break;
 				case "BASEI":
-				vM.vCurrBase++;
+				vM.vCurrBase=1;
 				vM.EnableBase(vM.vCurrBase);
 				vN.AddNotif("Base Mesh\n Upgrade!");
 				break;
 				case "GUNI":
-				vM.vCurrGun++;
+				vM.vCurrGun=1;
 				vM.EnableGun(vM.vCurrGun);
 				vN.AddNotif("Gun Mesh\n Upgrade!");
 				break;
 				case "SURFI":
-				vM.vTexture++;
+				vM.vTexture=1;
+				vM.EnableTex(vM.vTexture);
+				vN.AddNotif("Base Mesh\n Upgrade!");
+				break;
+				case "BASEII":
+				vM.vCurrBase=2;
+				vM.EnableBase(vM.vCurrBase);
+				vN.AddNotif("Base Mesh\n Upgrade!");
+				break;
+				case "GUNII":
+				vM.vCurrGun=2;
+				vM.EnableGun(vM.vCurrGun);
+				vN.AddNotif("Gun Mesh\n Upgrade!");
+				break;
+				case "SURFII":
+				vM.vTexture=2;
 				vM.EnableTex(vM.vTexture);
 				vN.AddNotif("Base Mesh\n Upgrade!");
 				break;
@@ -441,13 +466,13 @@ public class Upgrades : MonoBehaviour
 		{vName = "Visual Research I", vUnlocked = false, vBought = false, vPage = 2, vPrice = 10, vReusable = false, vSpecial = "VISUP"});
 		//15---
 		lUpgrades.Add(new Upgrade() 
-		{vName = "Base Visual I", vUnlocked = false, vBought = false, vPage = 2, vPrice = 10, vReusable = false, vSpecial = "BASEI"});
+		{vName = "Base Visual I", vUnlocked = false, vBought = false, vPage = 2, vPrice = 10, vReusable = true, vSpecial = "BASEI"});
 		//16
 		lUpgrades.Add(new Upgrade() 
-		{vName = "Gun Visual I", vUnlocked = false, vBought = false, vPage = 2, vPrice = 10, vReusable = false, vSpecial = "GUNI"});
+		{vName = "Gun Visual I", vUnlocked = false, vBought = false, vPage = 2, vPrice = 10, vReusable = true, vSpecial = "GUNI"});
 		//17
 		lUpgrades.Add(new Upgrade() 
-		{vName = "Surface Visual I", vUnlocked = false, vBought = false, vPage = 2, vPrice = 10, vReusable = false, vSpecial = "SURFI"});
+		{vName = "Surface Visual I", vUnlocked = false, vBought = false, vPage = 2, vPrice = 10, vReusable = true, vSpecial = "SURFI"});
 		//18
 		lUpgrades.Add(new Upgrade() 
 		{vName = "Advanced Research II", vUnlocked = false, vBought = false, vPage = 2, vPrice = 10, vReusable = false, vSpecial = "ARII"});
@@ -468,13 +493,13 @@ public class Upgrades : MonoBehaviour
 		{vName = "Visual Research II", vUnlocked = false, vBought = false, vPage = 2, vPrice = 10, vReusable = false, vSpecial = "VISUPII"});
 		//24---
 		lUpgrades.Add(new Upgrade() 
-		{vName = "Base Visual II", vUnlocked = false, vBought = false, vPage = 2, vPrice = 10, vReusable = false, vSpecial = "BASEI"});
+		{vName = "Base Visual II", vUnlocked = false, vBought = false, vPage = 2, vPrice = 10, vReusable = true, vSpecial = "BASEII"});
 		//25
 		lUpgrades.Add(new Upgrade() 
-		{vName = "Gun Visual II", vUnlocked = false, vBought = false, vPage = 2, vPrice = 10, vReusable = false, vSpecial = "GUNI"});
+		{vName = "Gun Visual II", vUnlocked = false, vBought = false, vPage = 2, vPrice = 10, vReusable = true, vSpecial = "GUNII"});
 		//26
 		lUpgrades.Add(new Upgrade() 
-		{vName = "Surface Visual II", vUnlocked = false, vBought = false, vPage = 2, vPrice = 10, vReusable = false, vSpecial = "SURFI"});
+		{vName = "Surface Visual II", vUnlocked = false, vBought = false, vPage = 2, vPrice = 10, vReusable = true, vSpecial = "SURFII"});
 		
 	}
 	//library of all tech

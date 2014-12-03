@@ -5,15 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/3D Tower Defense Starter Kit/Examples/Intro.unity
   - enabled: 1
-    path: Assets/3D Tower Defense Starter Kit/Scenes/Menu.unity
+    path: Assets/Scenes/main.unity
   - enabled: 1
-    path: Assets/3D Tower Defense Starter Kit/Scenes/Level_Desktop.unity
-  - enabled: 0
-    path: Assets/3D Tower Defense Starter Kit/Scenes/Level_Mobile.unity
-  - enabled: 1
-    path: Assets/3D Tower Defense Starter Kit/Scenes/GameOver.unity
-  - enabled: 0
-    path: Assets/3D Tower Defense Starter Kit/Examples/Advanced/Advanced.unity
+    path: Assets/Scenes/game.unity

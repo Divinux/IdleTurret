@@ -11,6 +11,12 @@ public class Turret : MonoBehaviour
 	public GameObject vBullet;
 	//enemy prefab
 	public GameObject vEnemy;
+	//bullet spawn spot
+	public GameObject vBulletSpawn;
+	public GameObject vParticles1;
+	public GameObject vParticles2;
+	//
+	public int vParticles = 1;
 	
 	//////////////
 	//to control the rotation 
@@ -163,7 +169,7 @@ public class Turret : MonoBehaviour
 	{
 		vS.PlayShoot();
 		//shoot
-		GameObject b = Instantiate(vBullet, vGun.transform.position, vGun.transform.rotation) as GameObject;
+		GameObject b = Instantiate(vBullet, vBulletSpawn.transform.position, vBulletSpawn.transform.rotation) as GameObject;
 		Bullet bs = b.GetComponent<Bullet>();
 		bs.vT = this;
 		bs.vSpeed = vBulSpeed;
@@ -172,6 +178,13 @@ public class Turret : MonoBehaviour
 		
 		vCool = vMaxCool;
 		Recoil();
+		if(vParticles==1){
+		 Particles();}
+	}
+	void Particles()
+	{
+	vParticles1.particleSystem.Play();
+	vParticles2.particleSystem.Play();
 	}
 	void Recoil()
 	{
@@ -311,7 +324,7 @@ public class Turret : MonoBehaviour
 		vHealth -= dm;
 		if(vHealth <= 0)
 		{
-			Debug.Log("Game Lost");
+			Application.LoadLevel(0);
 		}
 	}
 	//earn money and exp

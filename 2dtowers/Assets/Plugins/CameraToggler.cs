@@ -27,11 +27,11 @@ public class CameraToggler : MonoBehaviour
 			vS.PlayClickY();
 			Switch();
 		}
-		if(Input.GetAxis("Mouse ScrollWheel") > 0)
+		if(Input.GetAxis("Mouse ScrollWheel") < 0)
 		{
 			Zoom(0);
 		}
-		if(Input.GetAxis("Mouse ScrollWheel") < 0)
+		if(Input.GetAxis("Mouse ScrollWheel") > 0)
 		{
 			Zoom(1);
 		}
