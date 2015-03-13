@@ -41,13 +41,29 @@ public class EnemyModels : MonoBehaviour
 			{
 				Enable(t/5);
 				vCurrent = t/5;
+				int a = Random.Range(0,100);
+			if(a > 70)
+			{
+			Sprinkle(t/5);
+			}
 			}
 			else
 			{
 				Enable(vMeshes.Length-1);
 				vCurrent = vMeshes.Length-1;
+				int a = Random.Range(0,100);
+			if(a > 80)
+			{
+			Sprinkle(vMeshes.Length);
 			}
+			}
+			
 		}
+	}
+	//sprinkle lower level meshes
+	void Sprinkle(int zz)
+	{
+	Enable(Random.Range(0,zz));
 	}
 
 }

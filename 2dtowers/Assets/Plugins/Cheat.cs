@@ -61,8 +61,8 @@ public class Cheat : MonoBehaviour
 		// the entire code was correctly entered
 		if (index == cheatCode.Length) 
 		{
-			vT.vMoney += 10000;
-			vN.AddNotif("Cheat Activated!\n+10.000u");
+			vT.vMoney += 999999;
+			vN.AddNotif("Cheat Activated!\n+999.999u");
 			index = 0;
 		}
 		if (index2 == cheatCode2.Length) 

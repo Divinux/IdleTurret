@@ -13,8 +13,11 @@ public class Turret : MonoBehaviour
 	public GameObject vEnemy;
 	//bullet spawn spot
 	public GameObject vBulletSpawn;
+	//shooting particles
 	public GameObject vParticles1;
 	public GameObject vParticles2;
+	//lvl up particles
+	public GameObject vParticles3;
 	//
 	public int vParticles = 1;
 	
@@ -34,9 +37,9 @@ public class Turret : MonoBehaviour
 	//level
 	public int vLvl = 1;
 	public float vCurrExp = 0;
-	public float vExpBase = 4;
+	public float vExpBase = 100;
 	public float vExpLeft;
-	public float vMod = 1.15f;
+	public float vMod = 1.25f;
 	//////////////
 	//bullet speed
 	public float vBulSpeed = 1f;
@@ -292,12 +295,13 @@ public class Turret : MonoBehaviour
 	//lvl up
 	public void LvlUp()
 	{
+	if(vParticles==1){vParticles3.particleSystem.Play();}
 		vCurrExp -= vExpLeft;
 		//lvlup
 		vLvl++;
 		vMoney += vLvl*50;
 		LvlStats();
-		vN.AddNotif("Level Up!\nLevel: " + vLvl);
+		vN.AddNotif("Level Up!\nLevel: " + vLvl +"\n+" +vLvl*50 + "u\nGun Cooldown: " +vMaxCool.ToString("F0")+ "\nDamage: " + vBulDmg.ToString("F0") + "\nRotationspeed: " + damping.ToString("F0"));
 		//calculate next level
 		float t = Mathf.Pow(vMod, vLvl);
 		vExpLeft = vExpBase * t;
@@ -305,17 +309,19 @@ public class Turret : MonoBehaviour
 	//raise stats onlvlup
 	void LvlStats()
 	{
+		float mis = vMaxHealth-vHealth;
 		vMaxHealth *= 1.1f;
-		//vHealth = vMaxHealth;
+		vHealth = vMaxHealth;
+		vHealth -= mis;
 		
-		vMaxCool *= 0.9f;
+		vMaxCool *= 0.98f;
 		if(vMaxCool < 1)
 		{
 			vMaxCool = 1;
 		}
-		vBulDmg *= 1.1f;
+		vBulDmg *= 1.03f;
 		vBulDmg++;
-		vBulSpeed *= 1.1f;
+		vBulSpeed *= 1.03f;
 		damping *= 1.1f;
 	}
 	//take damage

@@ -40,7 +40,7 @@ public class Enemy : MonoBehaviour
 			vT.DMG(vDmg);
 			if(vT.vParticles == 1)
 			{
-			Debug.Log("yee");
+			
 			vDMGParticles.transform.parent = null;
 			DieOnCall a1 = vDMGParticles.GetComponent<DieOnCall>();
 			a1.Die();
@@ -70,7 +70,7 @@ public class Enemy : MonoBehaviour
 			DieOnCall a2 = vDMGParticles.GetComponent<DieOnCall>();
 			a2.Die();
 			vParticles.transform.parent = null;
-			Debug.Log("yee die fgt");
+			
 				vParticles.particleSystem.Play();
 			}
 			Die();

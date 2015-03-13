@@ -196,7 +196,7 @@ public class S : MonoBehaviour
 		PlayerPrefs.SetFloat("vHealth", 100f);
 		PlayerPrefs.SetFloat("vMaxHealth", 100f);
 		
-		PlayerPrefs.SetInt("vMoney", 25);
+		PlayerPrefs.SetInt("vMoney", 0);
 		
 		PlayerPrefs.SetInt("vLvl", 1);
 		PlayerPrefs.SetFloat("vCurrExp", 0f);
@@ -207,7 +207,7 @@ public class S : MonoBehaviour
 		PlayerPrefs.SetInt("vParticles",1);
 		
 		PlayerPrefs.SetInt("vWaveSize", 1);
-		PlayerPrefs.SetInt("vWaveFreq", 2000);
+		PlayerPrefs.SetInt("vWaveFreq", 5000);
 		PlayerPrefs.SetInt("eLvl", 1);
 		PlayerPrefs.SetInt("eDmg", 2);
 		PlayerPrefs.SetInt("eMoney", 2);

@@ -179,6 +179,41 @@ public class Mathfx
 	{
 		if(inn == 1){return true;}else{return false;}
 	}
-
+	//shortens an amount
+	public static string Shorten(float fts)
+	{
+		if(fts > 999999)
+		{
+		fts/=1000000;
+		return fts.ToString("F2") + "mio ";
+		}
+		else if(fts > 999)
+		{
+		fts/=1000;
+		return fts.ToString("F2") + "k ";
+		}
+		else
+		{
+		return fts + "";
+		}
+	}
+	public static string Shorten(int fts2)
+	{
+		float ff = fts2 * 1.0f;
+		if(ff > 999999)
+		{
+		ff/=1000000;
+		return ff.ToString("F2") + "mio ";
+		}
+		else if(ff > 999)
+		{
+		ff/=1000;
+		return ff.ToString("F2") + "k ";
+		}
+		else
+		{
+		return ff + "";
+		}
+	}
  
 }

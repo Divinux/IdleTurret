@@ -18,6 +18,7 @@ public class Ui : MonoBehaviour
 	public Texture2D vResTex;
 	public Texture2D vOptTex;
 	public Texture2D vCamTex;
+	public Texture2D vAchievTex;
 	
 	public Texture2D vCloseTex;
 	public Texture2D vBUP;
@@ -40,6 +41,7 @@ public class Ui : MonoBehaviour
 	//progress bar
 	public Texture2D vProgressFrame;
 	public Texture2D vProgressBar;
+	public Texture2D vWhite;
 	//status page
 	public int vStatSel = 0;
 	//upgrade page selection
@@ -63,14 +65,16 @@ public class Ui : MonoBehaviour
 	public int vStatOpt = 0;
 	public string vMuteButtonText = "";
 	public string vParticleButtonText = "";
+	
+	
 
 	
 	void Awake () 
 	{
-		WindowUpgrades = new Rect(70, 10, 300, 400);
-		WindowResearch = new Rect(70, 10, 300, 400);
-		WindowStatus = new Rect(70, 10, 200, 360);
-		WindowOptions = new Rect(70, 10, 300, 220);
+		WindowUpgrades = new Rect(70, 60, 600, 400);
+		WindowResearch = new Rect(70, 60, 600, 400);
+		WindowStatus = new Rect(70, 60, 200, 360);
+		WindowOptions = new Rect(70, 60, 300, 220);
 
 		vT = vTurret.GetComponent<Turret>();
 		vW = vTurret.GetComponent<Waves>();
@@ -96,7 +100,8 @@ public class Ui : MonoBehaviour
 		if(Input.GetKeyDown("r"))
 		{
 			vS.PlayClickY();
-			bRes = !bRes;
+			bUpgrades = !bUpgrades;
+			//bRes = !bRes;
 		}
 		if(Input.GetKeyDown("o"))
 		{
@@ -124,21 +129,22 @@ public class Ui : MonoBehaviour
 	
 	void OnGUI () 
 	{
+	    //GUI.Box(new Rect(0,0,900,600), "");
 		GUI.skin = skin;
 		if(vButtonStatus == 1)
 		{
-		if(GUI.Button(new Rect(10,10,50,50), vStatTex))
+		if(GUI.Button(new Rect(10,70,50,50), vStatTex))
 		{
 			bStat = !bStat;
 			vS.PlayClickY();
 		}
-		if(GUI.Button(new Rect(10,130,50,50), vResTex))
+		if(GUI.Button(new Rect(10,190,50,50), vAchievTex))
 		{
 			bRes = !bRes;
 			RefreshRes();
 			vS.PlayClickY();
 		}
-		if(GUI.Button(new Rect(10,70,50,50), vUpgradesTex))
+		if(GUI.Button(new Rect(10,130,50,50), vResTex))
 		{
 			bUpgrades = !bUpgrades;
 			vS.PlayClickY();
@@ -148,7 +154,7 @@ public class Ui : MonoBehaviour
 			bOpt = !bOpt;
 			vS.PlayClickY();
 		}
-		if(GUI.Button(new Rect(10,190,50,50), vCamTex))
+		if(GUI.Button(new Rect(10,10,50,50), vCamTex))
 		{
 			vC.Switch();
 			vS.PlayClickY();
@@ -184,10 +190,75 @@ public class Ui : MonoBehaviour
 		{
 			DrawOpt();
 		}
-		
+		/////////////////////77
+		DrawUI();
 		
 		Notif();
+		//tooltip
+	//Tooltip();
 		
+	}
+	void Tooltip()
+	{
+	if(GUI.tooltip != "")
+	{
+		int len2 = GUI.tooltip.Split('\n').Length;
+			int hei2 = len2 * 20;
+			hei2 +=10;
+		 GUI.Box (new Rect ( Event.current.mousePosition.x-100, Event.current.mousePosition.y+10,200,hei2), GUI.tooltip);
+		 //vToolTip = "";
+		 }
+	}
+	///////
+	void DrawUI()
+	{
+		//cd button
+		if(GUI.Button(new Rect(350,550,200,40), ""))
+		{
+			vS.PlayClickY();
+			if(vT.vLvl/10 >= 1)
+			{
+			vT.EARN(vT.vLvl/10,vT.vLvl);
+			}
+			else{
+			vT.EARN(1,vT.vLvl);
+			}
+			
+			if(!vW.vStarted){
+			vN.AddNotif("Cooldown Decreased by "+vT.vLvl * 20+" ms!\n1u Earned!\n1 Exp Earned!\nPrimitive Research Unlocked!");
+			vC.Switch();
+			}
+			vW.vStarted = true;
+			vW.Clicka(vT.vLvl * 20);
+		}
+		GUI.DrawTexture(new Rect(360, 560, 180, 20), vProgressFrame, ScaleMode.StretchToFill, true, 10.0F);
+		float wwu = fWidth(180F, vW.vF, vT.vWaveFreq, true);
+			GUI.DrawTexture(new Rect(361,561,wwu,18),vProgressBar, ScaleMode.StretchToFill, true, 10.0F);
+			GUI.Label(new Rect(416,560,200,50),"<size=14><color=black>Next Wave</color></size>");
+			GUI.Label(new Rect(415,559,200,50),"<size=14><color=#52CC00>Next Wave</color></size>");
+		//money
+		GUI.Box(new Rect(750,-10,400,60), "");
+		GUI.Label(new Rect(760,10,200,50),"<size=18><color=black>"+ Mathfx.Shorten(vT.vMoney) + "u </color></size>");
+			GUI.Label(new Rect(760,9,200,50),"<size=18><color=#52CC00>"+ Mathfx.Shorten(vT.vMoney) + "u </color></size>");
+		//health//////////////////
+		//white background
+		//GUI.DrawTexture(new Rect(250,0,400,60), vWhite,ScaleMode.StretchToFill, true, 10.0F);
+		GUI.Box(new Rect(250,-10,400,60), "");
+		//progress bar
+		GUI.DrawTexture(new Rect(260, 11, 180, 25), vProgressFrame, ScaleMode.StretchToFill, true, 10.0F);
+		float wwu2 = fWidth(180F, vT.vHealth, vT.vMaxHealth, false);
+			GUI.DrawTexture(new Rect(261,12,wwu2,23),vProgressBar, ScaleMode.StretchToFill, true, 10.0F);
+			//text
+			GUI.Label(new Rect(326,13,200,50),"<size=14><color=black>"+ vT.vHealth.ToString("F1") +"HP</color></size>");
+			GUI.Label(new Rect(325,12,200,50),"<size=14><color=#52CC00>"+ vT.vHealth.ToString("F1") +"HP</color></size>");
+		//explvl//////////////
+		GUI.DrawTexture(new Rect(460, 11, 180, 25), vProgressFrame, ScaleMode.StretchToFill, true, 10.0F);
+		float wwu3 = fWidth(180F, vT.vCurrExp , vT.vExpLeft, false);
+			GUI.DrawTexture(new Rect(461,12,wwu3,23),vProgressBar, ScaleMode.StretchToFill, true, 10.0F);
+			//text
+			GUI.Label(new Rect(526,13,200,50),"<size=14><color=black>Level "+ vT.vLvl +"</color></size>");
+			GUI.Label(new Rect(525,12,200,50),"<size=14><color=#52CC00>Level "+ vT.vLvl +"</color></size>");
+	
 	}
 	//////
 	void DrawStat()
@@ -196,7 +267,8 @@ public class Ui : MonoBehaviour
 	}
 	void fWindowStat(int w3)
 	{
-		GUI.Label(new Rect(20,10,200,50),"<size=24><color=white>Status</color></size>");
+	GUI.Label(new Rect(20,10,200,50),"<size=24><color=white>Status</color></size>");
+		GUI.Label(new Rect(380,562,200,50),"<color=black>Next Wave</color>");
 		if(GUI.Button(new Rect(150,10,42,42), vCloseTex, "label"))
 		{
 			bStat = !bStat;
@@ -288,7 +360,7 @@ public class Ui : MonoBehaviour
 	void fWindowUpgrades(int w1)
 	{
 		GUI.Label(new Rect(20,10,200,50),"<size=24><color=white>Upgrades</color></size>");
-		if(GUI.Button(new Rect(250,10,42,42), vCloseTex, "label"))
+		if(GUI.Button(new Rect(550,10,42,42), vCloseTex, "label"))
 		{
 			vS.PlayClickN();
 			bUpgrades = !bUpgrades;
@@ -312,7 +384,7 @@ public class Ui : MonoBehaviour
 			vS.PlayClickY();
 		}
 		DrawUpgradePage();
-		
+		DrawResearch();
 		GUI.DragWindow();
 	}
 	void DrawUpgradePage()
@@ -322,7 +394,9 @@ public class Ui : MonoBehaviour
 		{
 			foreach(int ind in la)
 			{
-				if(GUI.Button(new Rect(20,la.IndexOf(ind)*20,240,20),"<color=black>" + vU.lUpgrades[ind].vName + ": " + vU.lUpgrades[ind].vPrice + "u</color>"))
+				//string s = ";
+				string s2 = vU.lUpgrades[ind].vTool;
+				if(GUI.Button(new Rect(20,la.IndexOf(ind)*20,240,20), new GUIContent("<color=black>" + vU.lUpgrades[ind].vName + ": " + vU.lUpgrades[ind].vPrice + "u</color>", s2)))
 				{
 					if(vT.vMoney >= vU.lUpgrades[ind].vPrice)
 					{
@@ -341,9 +415,12 @@ public class Ui : MonoBehaviour
 		{
 			GUI.Label(new Rect(10,0,200,30),"<size=12><color=black>No Available Upgrades</color></size>");
 		}
+		
 		GUI.EndScrollView();
+		Tooltip();
+		//Tooltip();
 	}
-	//////
+	//////now actually draws achievments. name fhr.
 	void DrawRes()
 	{
 		
@@ -351,29 +428,35 @@ public class Ui : MonoBehaviour
 	}
 	void fWindowRes(int w2)
 	{
-		GUI.Label(new Rect(20,10,200,50),"<size=24><color=white>Research</color></size>");
-		if(GUI.Button(new Rect(250,10,42,42), vCloseTex, "label"))
+		GUI.Label(new Rect(20,10,200,50),"<size=24><color=white>Achievements</color></size>");
+		if(GUI.Button(new Rect(550,10,42,42), vCloseTex, "label"))
 		{
 			vS.PlayClickN();
 			bRes = !bRes;
 		}
-		//current project status
-		GUI.DrawTexture(new Rect(10, 80, 280, 15), vProgressFrame, ScaleMode.StretchToFill, true, 10.0F);
+		
+		GUI.DragWindow();
+	}
+	//draws the actual reserch now that it moved
+	void DrawResearch()
+	{
+	//current project status
+		GUI.DrawTexture(new Rect(310, 80, 280, 15), vProgressFrame, ScaleMode.StretchToFill, true, 10.0F);
 		
 		if(vCurrRes == -1)
 		{
-			GUI.Label(new Rect(20,60,200,30),"<size=12><color=black>No Active Research</color></size>");
+			GUI.Label(new Rect(320,55,200,30),"<size=12><color=black>No Active Research</color></size>");
 		}
 		else
 		{
-			GUI.Label(new Rect(20,60,200,30),"<size=12><color=black>"+ vU.lTech[vCurrRes].vName +"</color></size>");
+			GUI.Label(new Rect(320,60,200,30),"<size=12><color=black>"+ vU.lTech[vCurrRes].vName +"</color></size>");
 			
 			float www = fWidth(280F, vU.lTech[vCurrRes].vCool, vU.lTech[vCurrRes].vMaxCool, true);
-			GUI.DrawTexture(new Rect(11,81,www,13),vProgressBar, ScaleMode.StretchToFill, true, 10.0F);
+			GUI.DrawTexture(new Rect(311,81,www,13),vProgressBar, ScaleMode.StretchToFill, true, 10.0F);
 			
 			if(vU.vToUnlock != -1)
 			{
-				if(GUI.Button(new Rect(10,100,280,20), "<color=black>Claim Results</color>"))
+				if(GUI.Button(new Rect(310,100,280,20), "<color=black>Claim Results</color>"))
 				{
 					vU.vFunishUnlock(vU.vToUnlock);
 					vS.PlayCash();
@@ -386,12 +469,12 @@ public class Ui : MonoBehaviour
 		//progress bad
 		
 		
-		scrollPosition2 = GUI.BeginScrollView(new Rect(10, 130, 280, 220), scrollPosition2, new Rect(0, 0, 260, scrollHeight2));
+		scrollPosition2 = GUI.BeginScrollView(new Rect(310, 130, 280, 220), scrollPosition2, new Rect(0, 0, 260, scrollHeight2));
 		if(la2.Count >= 1)
 		{
 			foreach(int ind2 in la2)
-			{
-				if(GUI.Button(new Rect(20,la2.IndexOf(ind2)*20,240,20), "<color=black>" + vU.lTech[ind2].vName + ": " + vU.lTech[ind2].vPrice + "u</color>"))
+			{string s3 = vU.lTech[ind2].vTool;
+				if(GUI.Button(new Rect(20,la2.IndexOf(ind2)*20,240,20), new GUIContent("<color=black>" + vU.lTech[ind2].vName + ": " + vU.lTech[ind2].vPrice + "u</color>", s3)))
 				{
 					if(vT.vMoney >= vU.lTech[ind2].vPrice && vCurrRes == -1)
 					{
@@ -408,13 +491,12 @@ public class Ui : MonoBehaviour
 		}
 		else
 		{
-			GUI.Label(new Rect(10,0,200,30),"<size=12><color=black>No Available Research</color></size>");
+			GUI.Label(new Rect(310,0,200,30),"<size=12><color=black>No Available Research</color></size>");
 		}
 		
 		GUI.EndScrollView();
-		GUI.DragWindow();
+		Tooltip();
 	}
-	
 	//////
 	void DrawOpt()
 	{
